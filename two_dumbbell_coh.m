@@ -5,7 +5,7 @@
 
 
 %% Open file for writing
-config_file = 'dumbbell_test.cfg';
+config_file = 'dumbbell_coh.cfg';
 fid = fopen(config_file, 'w');
 
 %% Write out header based on default chromoShake values
@@ -38,10 +38,10 @@ spring_list = [0:mass_number-2;1:mass_number-1]';
 hinge_list = [0:mass_number-3;1:mass_number-2;2:mass_number-1]';
 
 %% Chain2 data
-%want to duplicate chain1 but shift everything by 10 nm in y
+%want to duplicate chain1 but shift everything by 10 nm in z;
 x2_pos = x_pos;
-y2_pos = y_pos + 1e-08;
-z2_pos = z_pos;
+y2_pos = y_pos;
+z2_pos = z_pos + 1e-08;
 
 %shift all other data by mass_number
 spring_list2 = spring_list + mass_number;
@@ -49,16 +49,16 @@ hinge_list2 = hinge_list + mass_number;
 
 %% Cohesin data
 %Generate cohesin template based on mass separation
-[base_y, base_z] = discrete_circle(bead_per_cohesin,mass_sep);
+[base_x, base_z] = discrete_circle(bead_per_cohesin,mass_sep);
 %Generate desired number of cohesins evenly spaced around middles section
 %of the chains
-coh_offsets = linspace(min(x_pos),max(x_pos),2*cohesin_number);
+coh_offsets = linspace(min(y_pos),max(y_pos),2*cohesin_number);
 coh_offsets = coh_offsets(round(cohesin_number/2):...
     ((cohesin_number-1)+cohesin_number/2));
 %Use offsets to alter x positions of cohesin rings
-coh_x = repmat(coh_offsets,[16 1]);
+coh_y = repmat(coh_offsets,[16 1]);
 %use repmat to repeat y and z positions of rings
-coh_y = repmat(base_y',[1 cohesin_number]);
+coh_x = repmat(base_x',[1 cohesin_number]);
 coh_z = repmat(base_z',[1 cohesin_number]);
 
 %% Print out chain 1
