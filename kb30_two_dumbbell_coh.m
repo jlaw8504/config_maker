@@ -54,8 +54,7 @@ hinge_list2 = hinge_list + mass_number;
 %Generate desired number of cohesins evenly spaced around middles section
 %of the chains
 coh_offsets = linspace(min(y_pos),max(y_pos),2*cohesin_number);
-coh_offsets = coh_offsets(round(cohesin_number/2):...
-    ((cohesin_number-1)+cohesin_number/2));
+coh_offsets = coh_offsets(round(cohesin_number/2):((cohesin_number-1)+cohesin_number/2));
 %Use offsets to alter x positions of cohesin rings
 coh_y = repmat(coh_offsets,[16 1]);
 %use repmat to repeat y and z positions of rings
