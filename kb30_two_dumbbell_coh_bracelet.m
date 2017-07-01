@@ -25,6 +25,10 @@ spring_rest =  1e-8; %10 nm
 spring_const = 0.226195;
 hinge_const = 4.0715e-12;
 
+%%Cohesin base dimensions and diameters
+[base_x, base_z] = discrete_circle(bead_per_cohesin,mass_sep);
+diameter = max(base_x)-min(base_x);
+
 %% Dumbbell 1 data (pinned to spindle)
 %use discrete_dumbbell.m function to generate positions
 line_beads = mass_number - (2*beads_per_loop);
@@ -40,7 +44,6 @@ hinge_list = [0:mass_number-3;1:mass_number-2;2:mass_number-1]';
 
 %% Chain2 data
 %want to duplicate chain1 but shift everything by 10 nm + diameter of cohesin in z;
-diameter = max(x_pos)-min(x_pos);
 x2_pos = x_pos;
 y2_pos = y_pos;
 z2_pos = z_pos + mass_sep + diameter;
@@ -50,11 +53,8 @@ spring_list2 = spring_list + mass_number;
 hinge_list2 = hinge_list + mass_number;
 
 %% Cohesin for chain 1
-%Generate cohesin template based on mass separation
-[base_x, base_z] = discrete_circle(bead_per_cohesin,mass_sep);
 %Generate desired number of cohesins evenly spaced around middles section
 %of the chains
-diameter = max(x_pos)-min(x_pos);
 coh_offsets = linspace(min(y_pos)+diameter*1.5,max(y_pos)-diameter*1.5-5*mass_sep,cohesin_number/2);
 %Use offsets to alter x positions of cohesin rings
 coh_y = repmat(coh_offsets,[16 1]);
