@@ -1,4 +1,4 @@
-function add_condensin_ver3_specified(seed,infile,outfile,num_condensin,specified_dna_color)
+function add_condensin_bracelet(seed,infile,outfile,num_condensin)
 %set random number seed
 rng(seed);
 % this code adds N condensin molecules to the file.
@@ -12,13 +12,13 @@ spring_damp = 10; % how much factor by which the gammma spring is weaker than th
 time = 'test'; % this is used to find the last time step
 colors = 'test'; % used to assign mass colors
 time_init = 'test'; % used to delete previous time steps
-condensin_mass_color = 3; % color of condensin beads
-DNA_mass_color = [1 2]; % color of DNA beads
+condensin_mass_color = 4; % color of condensin beads
+DNA_mass_color = [1 3]; % color of DNA beads
 mass_condensin = []; % this is used to look for condensin beads
 springs_condensin = []; % this is used to look for springs bound to condensin
 mass_DNA_bound = []; % this is used to add condensins to files that already have condensin
 mass_DNA_exclude = [0 0 0 0 0.5]; % this is used to exclude certain DNA beads from binding
-cond_sep = 10; % how far apart (at minimum) you want the condensins to start from each other in terms of mass sep
+cond_sep = 0; % how far apart (at minimum) you want the condensins to start from each other in terms of mass sep
 theta_input = 10; % number of degrees the condensin will rotate when looking for a position
 
 
@@ -249,8 +249,23 @@ end
 program_check = 1; % check for the entire program
 random_placement_counter = 0; % ends the infinite loop if it trys for too long
 
+%Create the specified list that the alpha site for condensin will attach to
+min_z = min(mass_coords_in(:,3));
+ring_y = mass_coords_in(mass_coords_in(:,3)==min_z,2);
+ring_y = unique(ring_y);
+for i = 1:length(ring_y)-1
+    ring_y_mid(i) = (ring_y(i)+ring_y(i+1))/2;
+end
+y_idx_reference(:,1) = mass_coords_in(mass_coords_in(:,4)==1,2);
+y_idx_reference(:,2) = mass_coords_in(mass_coords_in(:,4)==1,5);
+for i = 1:length(ring_y_mid)
+    [M,idx] = min(abs(ring_y_mid(i)-y_idx_reference(:,1)));
+    specified_mass_list(i) = y_idx_reference(idx,2);
+end
+specified_mass_list(length(specified_mass_list)+1:length(specified_mass_list)*2) = specified_mass_list(1:length(specified_mass_list))+length(y_idx_reference);
+
 % loop through this massive chunk of code until you get X condensin beads placed
-while program_check == 1;
+while program_check == 1
     condensin_count = 0; % number of currently active condensin
     
     bind_check = 1; % loops through the while loop until all designated beads are chosen
@@ -266,7 +281,7 @@ while program_check == 1;
                 clearvars rand_dist;
                 
                 % pick a random DNA molecule to bind to for each condensin
-                r = round(linspace(1,max(mass_coords(mass_coords(:,4)==specified_dna_color,5),num_condensin));
+                r = specified_mass_list;
                 
                 m = 1; % used to assign the initial binding beads
                 
