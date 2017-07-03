@@ -17,7 +17,7 @@ fprintf(fid, string);
 % %% Hard code variables
 mass_number = 1020;
 beads_per_loop = 30;
-cohesin_number = 90; %total number of cohesin (evenly divided per chain)
+cohesin_number = 94; %total number of cohesin (evenly divided per chain)
 bead_per_cohesin = 16;
 mass_sep = 1e-8; %10 nm separation
 mass_mass = 3.38889e-20;
@@ -27,7 +27,7 @@ hinge_const = 4.0715e-12;
 
 %%Cohesin base dimensions and diameters
 [base_x, base_z] = discrete_circle(bead_per_cohesin,mass_sep);
-diameter = max(base_x)-min(base_x);
+diameter_coh = max(base_x)-min(base_x);
 
 %% Dumbbell 1 data (pinned to spindle)
 %use discrete_dumbbell.m function to generate positions
@@ -35,6 +35,7 @@ line_beads = mass_number - (2*beads_per_loop);
 final_loop_beads = beads_per_loop;
 [x_pos,y_pos] = discrete_dumbbell(line_beads,final_loop_beads, mass_sep);
 z_pos = zeros(size(x_pos));
+diameter_loop = max(x_pos)- min(x_pos);
 
 %spring list for chain1
 %want connection between all consectutive masses
@@ -46,7 +47,7 @@ hinge_list = [0:mass_number-3;1:mass_number-2;2:mass_number-1]';
 %want to duplicate chain1 but shift everything by 10 nm + diameter of cohesin in z;
 x2_pos = x_pos;
 y2_pos = y_pos;
-z2_pos = z_pos + mass_sep + diameter;
+z2_pos = z_pos + mass_sep + diameter_coh;
 
 %shift all other data by mass_number
 spring_list2 = spring_list + mass_number;
@@ -55,18 +56,25 @@ hinge_list2 = hinge_list + mass_number;
 %% Cohesin for chain 1
 %Generate desired number of cohesins evenly spaced around middles section
 %of the chains
-coh_offsets = linspace(min(y_pos)+diameter*1.5,max(y_pos)-diameter*1.5-5*mass_sep,cohesin_number/2);
+coh_offsets = linspace(min(y_pos)+diameter_loop*1.5,max(y_pos)-diameter_loop*1.5,(cohesin_number-4)/2);
 %Use offsets to alter x positions of cohesin rings
 coh_y = repmat(coh_offsets,[16 1]);
 %use repmat to repeat y and z positions of rings
-coh_x = repmat(base_x',[1 cohesin_number]);
-coh_z = repmat(base_z',[1 cohesin_number]);
+coh_x = repmat(base_x',[1 (cohesin_number-4)/2]);
+coh_z = repmat(base_z',[1 (cohesin_number-4)/2]);
+
+%Insert dumbbell cohesin coordinates
+b_coh = beads_per_loop/2;
+u_coh = beads_per_loop*1.5+line_beads;
+coh_x = [base_x'+x_pos(b_coh) coh_x base_x'+x_pos(u_coh)];
+coh_y = [repmat(y_pos(b_coh),[16,1]) coh_y repmat(y_pos(u_coh),[16 1])];
+coh_z = [coh_z coh_z(:,1:2)];
 
 %% Cohesin for chain 2
 
 coh2_x = coh_x; %Duplicate the x axis
 coh2_y = coh_y; %Duplicate the y axis
-coh2_z = coh_z + diameter + mass_sep; %Shift z axis by diameter to align with the second chain plus mass_sep for spring
+coh2_z = coh_z + diameter_coh + mass_sep; %Shift z axis by diameter to align with the second chain plus mass_sep for spring
 
 %% Print out chain 1
 %Spring and hinge idx
@@ -89,7 +97,7 @@ for i = 1:mass_number
 
 end
 fprintf(fid,'  spring %d %d %.1g %.6g\n',0,...
-            beads_per_loop, spring_rest, spring_const);
+            beads_per_loop-1, spring_rest, spring_const);
 fprintf(fid,'  spring %d %d %.1g %.6g\n',(mass_number-1)-(beads_per_loop-1),...
             mass_number-1, spring_rest, spring_const);
 %% Print out chain 2
@@ -97,7 +105,7 @@ spr_idx = 1;
 hinge_idx = 1;
 for i = 1:mass_number
     fprintf(fid,'  mass %d\t %.6g\t %.6g %.6g %.6g %d\n',i-1+mass_number,...
-        mass_mass, x2_pos(i),y2_pos(i), z2_pos(i),3);
+        mass_mass, x2_pos(i),y2_pos(i), z2_pos(i),4);
     if (i-1) == spring_list(spr_idx,2)
         fprintf(fid,'  spring %d %d %.1g %.6g\n',spring_list2(spr_idx,1),...
             spring_list2(spr_idx,2), spring_rest, spring_const);

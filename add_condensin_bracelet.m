@@ -12,8 +12,8 @@ spring_damp = 10; % how much factor by which the gammma spring is weaker than th
 time = 'test'; % this is used to find the last time step
 colors = 'test'; % used to assign mass colors
 time_init = 'test'; % used to delete previous time steps
-condensin_mass_color = 4; % color of condensin beads
-DNA_mass_color = [1 3]; % color of DNA beads
+condensin_mass_color = 2; % color of condensin beads
+DNA_mass_color = [1 4]; % color of DNA beads
 mass_condensin = []; % this is used to look for condensin beads
 springs_condensin = []; % this is used to look for springs bound to condensin
 mass_DNA_bound = []; % this is used to add condensins to files that already have condensin
@@ -252,7 +252,8 @@ random_placement_counter = 0; % ends the infinite loop if it trys for too long
 %Create the specified list that the alpha site for condensin will attach to
 min_z = min(mass_coords_in(:,3));
 ring_y = mass_coords_in(mass_coords_in(:,3)==min_z,2);
-ring_y = unique(ring_y);
+ring_y = sort(unique(ring_y));
+ring_y = ring_y(2:end-1);
 for i = 1:length(ring_y)-1
     ring_y_mid(i) = (ring_y(i)+ring_y(i+1))/2;
 end
