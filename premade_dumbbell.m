@@ -1,5 +1,5 @@
 seed = 42;
-cond_num = 90;
+cond_num = 88;
 cd('/home1/lawrimor/config_maker');
 system(sprintf('/home1/lawrimor/source/brownianMotion/chromoShake/chromoShake -openCL_dir $HOME/source/brownianMotion/chromoShake/ -save $HOME/config_maker/kb30_s%d_c%d_0000.out 5000 10 $HOME/config_maker/kb30_s%d_c%d.cfg',seed, cond_num, seed, cond_num));
 system(sprintf('grep spring kb30_s%d_c%d_0000.out > springs_kb30_s%d_c%d.txt', seed, cond_num, seed, cond_num));
