@@ -1,7 +1,7 @@
 seed = 42;
-cond_num = 90;
-cd('/home1/lawrimor/config_maker');
-system(sprintf('/home1/lawrimor/source/brownianMotion/chromoShake/chromoShake -openCL_dir $HOME/source/brownianMotion/chromoShake/ -save $HOME/config_maker/kb30_s%d_c%d_0000.out 5000 10 $HOME/config_maker/kb30_s%d_c%d.cfg',seed, cond_num, seed, cond_num));
+cond_num = 18;
+cd('C:\Users\ayush\Desktop\output\');
+system(sprintf('cd "C:\\Program Files\\CISMM.org\\chromoShake_1.2.0" & chromoShake.exe -openCL_dir openCL -save "C:\\Users\\ayush\\Desktop\\output\\kb30_s%d_c%d_0000.out" 5000 10 C:\\Users\\ayush\\Desktop\\output\\kb30_s%d_c%d.cfg',seed, cond_num, seed, cond_num));
 system(sprintf('grep spring kb30_s%d_c%d_0000.out > springs_kb30_s%d_c%d.txt', seed, cond_num, seed, cond_num));
 n = 1;
 while n < 1001
@@ -25,9 +25,9 @@ while n < 1001
 		str_padi = [];
 	end
 
-	condensin_step_ver3(sprintf('kb30_s%d_c%d_%s%d.out', seed, cond_num, str_padi, i),...
+	condensin_step_ver4(sprintf('kb30_s%d_c%d_%s%d.out', seed, cond_num, str_padi, i),...
         sprintf('kb30_s%d_c%d_%s%d.out', seed, cond_num, str_pad, n));
-	system(sprintf('/home1/lawrimor/source/brownianMotion/chromoShake/chromoShake -openCL_dir $HOME/source/brownianMotion/chromoShake/ -save $HOME/config_maker/kb30_s%d_c%d_%s%d.out 5000 10 -continue', seed, cond_num, str_pad, n));
+	system(sprintf('cd "C:\\Program Files\\CISMM.org\\chromoShake_1.2.0" & chromoShake.exe -openCL_dir openCL -save "C:\\Users\\ayush\\Desktop\\output\\kb30_s%d_c%d_%s%d.out" 5000 10 -continue', seed, cond_num, str_pad, n));
 	command = sprintf('grep nan kb30_s%d_c%d_%s%d.out | wc -l', seed, cond_num, str_pad, n);
 	[~,result] = system(command);
 	result_list = strsplit(result);

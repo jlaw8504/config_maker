@@ -263,6 +263,8 @@ for i = 1:length(ring_y_mid)
     [M,idx] = min(abs(ring_y_mid(i)-y_idx_reference(:,1)));
     specified_mass_list(i) = y_idx_reference(idx,2);
 end
+[M,idx] = min(abs(ring_y(end)-y_idx_reference(:,1)));
+specified_mass_list = [specified_mass_list y_idx_reference(idx,2)+5];
 specified_mass_list(length(specified_mass_list)+1:length(specified_mass_list)*2) = specified_mass_list(1:length(specified_mass_list))+length(y_idx_reference);
 
 % loop through this massive chunk of code until you get X condensin beads placed

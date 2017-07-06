@@ -17,7 +17,7 @@ fprintf(fid, string);
 % %% Hard code variables
 mass_number = 1020;
 beads_per_loop = 30;
-cohesin_number = 94; %total number of cohesin (evenly divided per chain)
+cohesin_number = 22; %total number of cohesin (evenly divided per chain)
 bead_per_cohesin = 16;
 mass_sep = 1e-8; %10 nm separation
 mass_mass = 3.38889e-20;
@@ -56,7 +56,7 @@ hinge_list2 = hinge_list + mass_number;
 %% Cohesin for chain 1
 %Generate desired number of cohesins evenly spaced around middles section
 %of the chains
-coh_offsets = linspace(min(y_pos)+diameter_loop*1.5,max(y_pos)-diameter_loop*1.5,(cohesin_number-4)/2);
+coh_offsets = linspace(min(y_pos)+diameter_loop*1.5,max(y_pos)-diameter_loop*1.5-5*mass_sep,(cohesin_number-4)/2);
 %Use offsets to alter x positions of cohesin rings
 coh_y = repmat(coh_offsets,[16 1]);
 %use repmat to repeat y and z positions of rings
