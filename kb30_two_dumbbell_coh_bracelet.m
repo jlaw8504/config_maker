@@ -81,48 +81,58 @@ coh2_z = coh_z + diameter_coh + mass_sep; %Shift z axis by diameter to align wit
 spr_idx = 1;
 hinge_idx = 1;
 for i = 1:mass_number
-    fprintf(fid,'  mass %d\t %.6g\t %.6g %.6g %.6g\n',i-1,...
-        mass_mass, x_pos(i),y_pos(i), z_pos(i));
+    if i == beads_per_loop || i == (mass_number-(beads_per_loop-1))
+        fprintf(fid,'  mass %d\t %.6g\t %.6g %.6g %.6g %d\n',i-1,...
+            mass_mass, x_pos(i),y_pos(i), z_pos(i), 3);
+    else
+        fprintf(fid,'  mass %d\t %.6g\t %.6g %.6g %.6g\n',i-1,...
+            mass_mass, x_pos(i),y_pos(i), z_pos(i));
+    end
     if (i-1) == spring_list(spr_idx,2)
         fprintf(fid,'  spring %d %d %.1g %.6g\n',spring_list(spr_idx,1),...
             spring_list(spr_idx,2), spring_rest, spring_const);
-    %increment spr_idx
-    spr_idx = spr_idx +1;
+        %increment spr_idx
+        spr_idx = spr_idx +1;
     end
     if (i-1) == hinge_list(hinge_idx,3)
         fprintf(fid,'  hinge %d %d %d %.5g\n', hinge_list(hinge_idx,1),...
             hinge_list(hinge_idx,2), hinge_list(hinge_idx,3), hinge_const);
-    hinge_idx = 1+hinge_idx;
+        hinge_idx = 1+hinge_idx;
     end
-
+    
 end
 fprintf(fid,'  spring %d %d %.1g %.6g\n',0,...
-            beads_per_loop-1, spring_rest, spring_const);
+    beads_per_loop-1, spring_rest, spring_const);
 fprintf(fid,'  spring %d %d %.1g %.6g\n',(mass_number-1)-(beads_per_loop-1),...
-            mass_number-1, spring_rest, spring_const);
+    mass_number-1, spring_rest, spring_const);
 %% Print out chain 2
 spr_idx = 1;
 hinge_idx = 1;
 for i = 1:mass_number
-    fprintf(fid,'  mass %d\t %.6g\t %.6g %.6g %.6g %d\n',i-1+mass_number,...
+    if i == beads_per_loop || i == (mass_number-(beads_per_loop-1))
+        fprintf(fid,'  mass %d\t %.6g\t %.6g %.6g %.6g %d\n',i-1+mass_number,...
+        mass_mass, x2_pos(i),y2_pos(i), z2_pos(i),3);
+    else
+        fprintf(fid,'  mass %d\t %.6g\t %.6g %.6g %.6g %d\n',i-1+mass_number,...
         mass_mass, x2_pos(i),y2_pos(i), z2_pos(i),4);
+    end
     if (i-1) == spring_list(spr_idx,2)
         fprintf(fid,'  spring %d %d %.1g %.6g\n',spring_list2(spr_idx,1),...
             spring_list2(spr_idx,2), spring_rest, spring_const);
-    %increment spr_idx
-    spr_idx = spr_idx +1;
+        %increment spr_idx
+        spr_idx = spr_idx +1;
     end
     if (i-1) == hinge_list(hinge_idx,3)
         fprintf(fid,'  hinge %d %d %d %.5g\n', hinge_list2(hinge_idx,1),...
             hinge_list2(hinge_idx,2), hinge_list2(hinge_idx,3), hinge_const);
-    hinge_idx = 1+hinge_idx;
+        hinge_idx = 1+hinge_idx;
     end
-
+    
 end
 fprintf(fid,'  spring %d %d %.1g %.6g\n',mass_number,...
-            (mass_number-1)+beads_per_loop, spring_rest, spring_const);
+    (mass_number-1)+beads_per_loop, spring_rest, spring_const);
 fprintf(fid,'  spring %d %d %.1g %.6g\n',(2*mass_number-1)-(beads_per_loop-1),...
-            (2*mass_number-1), spring_rest, spring_const);
+    (2*mass_number-1), spring_rest, spring_const);
 %% Print out cohesins for chain 1
 mass_idx = 2*mass_number;
 for col = 1:cohesin_number/2
@@ -132,30 +142,30 @@ for col = 1:cohesin_number/2
         end
         if row == 1
             %print out mass
-        fprintf(fid,'  mass %d\t %.6g\t %.6g %.6g %.6g %d\n',...
-            mass_idx,mass_mass,coh_x(row,col),coh_y(row,col),coh_z(row,col),5);
-        %update mass idx
-        mass_idx = mass_idx + 1;
-        
+            fprintf(fid,'  mass %d\t %.6g\t %.6g %.6g %.6g %d\n',...
+                mass_idx,mass_mass,coh_x(row,col),coh_y(row,col),coh_z(row,col),5);
+            %update mass idx
+            mass_idx = mass_idx + 1;
+            
         elseif row == 2 && row ~= bead_per_cohesin
             %print out mass
             fprintf(fid,'  mass %d\t %.6g\t %.6g %.6g %.6g %d\n',...
-            mass_idx,mass_mass,coh_x(row,col),coh_y(row,col),coh_z(row,col),5);
-        %print out spring
+                mass_idx,mass_mass,coh_x(row,col),coh_y(row,col),coh_z(row,col),5);
+            %print out spring
             fprintf(fid,'  spring %d %d %.1g %.6g\n',mass_idx-1,mass_idx,...
-            spring_rest, spring_const);
-        %update mass idx
-        mass_idx = mass_idx + 1;
-        
+                spring_rest, spring_const);
+            %update mass idx
+            mass_idx = mass_idx + 1;
+            
         elseif row > 2 && row ~= bead_per_cohesin
             %print out mass
             fprintf(fid,'  mass %d\t %.6g\t %.6g %.6g %.6g %d\n',...
-            mass_idx,mass_mass,coh_x(row,col),coh_y(row,col),coh_z(row,col),5);
-        %print out spring
-        fprintf(fid,'  spring %d %d %.1g %.6g\n',mass_idx-1,mass_idx,...
-            spring_rest, spring_const);
-        %print out hinge
-        fprintf(fid,'  hinge %d %d %d %.5g\n',mass_idx-2,mass_idx-1,mass_idx,...
+                mass_idx,mass_mass,coh_x(row,col),coh_y(row,col),coh_z(row,col),5);
+            %print out spring
+            fprintf(fid,'  spring %d %d %.1g %.6g\n',mass_idx-1,mass_idx,...
+                spring_rest, spring_const);
+            %print out hinge
+            fprintf(fid,'  hinge %d %d %d %.5g\n',mass_idx-2,mass_idx-1,mass_idx,...
                 hinge_const);
             %update mass idx
             mass_idx = mass_idx + 1;
@@ -163,18 +173,18 @@ for col = 1:cohesin_number/2
         elseif row == bead_per_cohesin
             %print out mass
             fprintf(fid,'  mass %d\t %.6g\t %.6g %.6g %.6g %d\n',...
-            mass_idx,mass_mass,coh_x(row,col),coh_y(row,col),coh_z(row,col),5);
-        %print out spring
-        fprintf(fid,'  spring %d %d %.1g %.6g\n',mass_idx-1,mass_idx,...
-            spring_rest, spring_const);
-        %print out hinge
-        fprintf(fid,'  hinge %d %d %d %.5g\n',mass_idx-2,mass_idx-1,mass_idx,...
+                mass_idx,mass_mass,coh_x(row,col),coh_y(row,col),coh_z(row,col),5);
+            %print out spring
+            fprintf(fid,'  spring %d %d %.1g %.6g\n',mass_idx-1,mass_idx,...
+                spring_rest, spring_const);
+            %print out hinge
+            fprintf(fid,'  hinge %d %d %d %.5g\n',mass_idx-2,mass_idx-1,mass_idx,...
                 hinge_const);
             %print out final springs
             fprintf(fid,'  spring %d %d %.1g %.6g\n',mass_idx,mass_idx-(bead_per_cohesin -1),...
-            spring_rest, spring_const);
+                spring_rest, spring_const);
             %print out second-to-last hinge
-             fprintf(fid,'  hinge %d %d %d %.5g\n',mass_idx-1,mass_idx,mass_idx-(bead_per_cohesin -1),...
+            fprintf(fid,'  hinge %d %d %d %.5g\n',mass_idx-1,mass_idx,mass_idx-(bead_per_cohesin -1),...
                 hinge_const);
             %print out last hinge
             fprintf(fid,'  hinge %d %d %d %.5g\n',mass_idx,mass_idx-(bead_per_cohesin -1)...
@@ -185,7 +195,7 @@ for col = 1:cohesin_number/2
         
         
     end
-  
+    
 end
 %% Print out cohesins for chain 2
 mass_idx = 2*mass_number+(cohesin_number/2)*bead_per_cohesin;
@@ -196,30 +206,30 @@ for col = 1:cohesin_number/2
         end
         if row == 1
             %print out mass
-        fprintf(fid,'  mass %d\t %.6g\t %.6g %.6g %.6g %d\n',...
-            mass_idx,mass_mass,coh2_x(row,col),coh2_y(row,col),coh2_z(row,col),5);
-        %update mass idx
-        mass_idx = mass_idx + 1;
-        
+            fprintf(fid,'  mass %d\t %.6g\t %.6g %.6g %.6g %d\n',...
+                mass_idx,mass_mass,coh2_x(row,col),coh2_y(row,col),coh2_z(row,col),5);
+            %update mass idx
+            mass_idx = mass_idx + 1;
+            
         elseif row == 2 && row ~= bead_per_cohesin
             %print out mass
             fprintf(fid,'  mass %d\t %.6g\t %.6g %.6g %.6g %d\n',...
-            mass_idx,mass_mass,coh2_x(row,col),coh2_y(row,col),coh2_z(row,col),5);
-        %print out spring
+                mass_idx,mass_mass,coh2_x(row,col),coh2_y(row,col),coh2_z(row,col),5);
+            %print out spring
             fprintf(fid,'  spring %d %d %.1g %.6g\n',mass_idx-1,mass_idx,...
-            spring_rest, spring_const);
-        %update mass idx
-        mass_idx = mass_idx + 1;
-        
+                spring_rest, spring_const);
+            %update mass idx
+            mass_idx = mass_idx + 1;
+            
         elseif row > 2 && row ~= bead_per_cohesin
             %print out mass
             fprintf(fid,'  mass %d\t %.6g\t %.6g %.6g %.6g %d\n',...
-            mass_idx,mass_mass,coh2_x(row,col),coh2_y(row,col),coh2_z(row,col),5);
-        %print out spring
-        fprintf(fid,'  spring %d %d %.1g %.6g\n',mass_idx-1,mass_idx,...
-            spring_rest, spring_const);
-        %print out hinge
-        fprintf(fid,'  hinge %d %d %d %.5g\n',mass_idx-2,mass_idx-1,mass_idx,...
+                mass_idx,mass_mass,coh2_x(row,col),coh2_y(row,col),coh2_z(row,col),5);
+            %print out spring
+            fprintf(fid,'  spring %d %d %.1g %.6g\n',mass_idx-1,mass_idx,...
+                spring_rest, spring_const);
+            %print out hinge
+            fprintf(fid,'  hinge %d %d %d %.5g\n',mass_idx-2,mass_idx-1,mass_idx,...
                 hinge_const);
             %update mass idx
             mass_idx = mass_idx + 1;
@@ -227,18 +237,18 @@ for col = 1:cohesin_number/2
         elseif row == bead_per_cohesin
             %print out mass
             fprintf(fid,'  mass %d\t %.6g\t %.6g %.6g %.6g %d\n',...
-            mass_idx,mass_mass,coh2_x(row,col),coh2_y(row,col),coh2_z(row,col),5);
-        %print out spring
-        fprintf(fid,'  spring %d %d %.1g %.6g\n',mass_idx-1,mass_idx,...
-            spring_rest, spring_const);
-        %print out hinge
-        fprintf(fid,'  hinge %d %d %d %.5g\n',mass_idx-2,mass_idx-1,mass_idx,...
+                mass_idx,mass_mass,coh2_x(row,col),coh2_y(row,col),coh2_z(row,col),5);
+            %print out spring
+            fprintf(fid,'  spring %d %d %.1g %.6g\n',mass_idx-1,mass_idx,...
+                spring_rest, spring_const);
+            %print out hinge
+            fprintf(fid,'  hinge %d %d %d %.5g\n',mass_idx-2,mass_idx-1,mass_idx,...
                 hinge_const);
             %print out final springs
             fprintf(fid,'  spring %d %d %.1g %.6g\n',mass_idx,mass_idx-(bead_per_cohesin -1),...
-            spring_rest, spring_const);
+                spring_rest, spring_const);
             %print out second-to-last hinge
-             fprintf(fid,'  hinge %d %d %d %.5g\n',mass_idx-1,mass_idx,mass_idx-(bead_per_cohesin -1),...
+            fprintf(fid,'  hinge %d %d %d %.5g\n',mass_idx-1,mass_idx,mass_idx-(bead_per_cohesin -1),...
                 hinge_const);
             %print out last hinge
             fprintf(fid,'  hinge %d %d %d %.5g\n',mass_idx,mass_idx-(bead_per_cohesin -1)...
@@ -249,12 +259,12 @@ for col = 1:cohesin_number/2
         
         
     end
-  
+    
 end
 %% Print springs between cohesins for bracelet
 for col = 1:cohesin_number/2
     fprintf(fid,'  spring %d %d %.1g %.6g\n',rung_masses(col,1),rung_masses(col,2),...
-            spring_rest, spring_const);
+        spring_rest, spring_const);
 end
 fprintf(fid,'}\n');
 fclose(fid);

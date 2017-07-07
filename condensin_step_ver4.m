@@ -1,4 +1,4 @@
-function condensin_step_ver3(infile,outfile)
+function condensin_step_ver4(infile,outfile)
 
 % this code lets the condensin molecules on your DNA walk/extrude loops
 
