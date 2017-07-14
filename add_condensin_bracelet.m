@@ -265,8 +265,10 @@ for i = 1:length(ring_y_mid)
 end
 [M,idx] = min(abs(ring_y(end)-y_idx_reference(:,1)));
 specified_mass_list = [specified_mass_list y_idx_reference(idx,2)+5];
+loop_dna = mass_coords_in(mass_coords_in(:,4)==3,5);
+offset = length(loop_dna)/4;
+specified_mass_list = specified_mass_list - offset;
 specified_mass_list(length(specified_mass_list)+1:length(specified_mass_list)*2) = specified_mass_list(1:length(specified_mass_list))+length(y_idx_reference);
-
 % loop through this massive chunk of code until you get X condensin beads placed
 while program_check == 1
     condensin_count = 0; % number of currently active condensin
