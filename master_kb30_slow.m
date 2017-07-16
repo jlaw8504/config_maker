@@ -39,7 +39,7 @@ while n < steps + 1
     filename_i = sprintf('%s_%s%d.out', basename, str_padi, i);
     filename_n = sprintf('%s_%s%d.out', basename, str_pad, n);
     %Step the condensins
-    condensin_step_ver4(filename_i, filename_n);
+    condensin_step_ver5(filename_i, filename_n);
     %Run chromoShake
     system(sprintf('%s -save %s 50000 10 -continue', chromo_cmd, filename_n))
     %search for NaNs
