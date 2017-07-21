@@ -276,7 +276,7 @@ for z = 1:size(condensin_A,1)
         % log this spring to be deleted
         spring_delete{s,1} = sprintf('  spring %d %d %.1g %.6g',DNA_alpha(z,5),condensin_A(z,5),spring_rest,spring_const);
         s = s+1; % increase the counter by 1
-        spring_create{s,1} = sprintf('  spring %d %d %.1g %.6g',DNA_alpha(z,5),condensin_A(z,5),spring_rest,spring_const/spring_weak);
+        spring_create{y,1} = sprintf('  spring %d %d %.1g %.6g',DNA_alpha(z,5),condensin_A(z,5),spring_rest,spring_const/spring_weak);
         % increase the counters by 1
         y = y+1;
         q = q+1;
